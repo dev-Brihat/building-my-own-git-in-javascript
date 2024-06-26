@@ -1,7 +1,6 @@
 const fs = require("fs");
 const path = require("path");
 
-console.log("Logs from your program will appear here!");
 
 const command = process.argv[2];
 
