@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { deflateRawSync } = require("zlib");
+const zlib = require("zlib");
 
 
 const command = process.argv[2];
