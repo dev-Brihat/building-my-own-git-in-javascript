@@ -30,7 +30,7 @@ function createGitDirectory() {
 function catFile(hash_code){
   if (flag === '-p'){
     const content = fs.readFileSync(path.join(process.cwd(), ".git", "objects", hash_code.slice(0, 2), hash_code.slice(2)));
-    const decompressed_data = zlib.deflateRawSync(content);
+    const decompressed_data = zlib.inflateSync(content);
     const result = decompressed_data.toString().split("\x00")[1];
 
     process.stdout.write(result);
