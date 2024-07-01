@@ -53,11 +53,12 @@ function hashObject (file_name) {
     process.stdout.write(hash); 
     
     const directory_path = `${process.cwd()}/.git/objects/${hash.slice(0,2)}}`
-    if(!fs.existsSync(directory_path)){
-      fs.mkdirSync(directory_path, {recursive: true,}); 
-    }
-  
-    const compressed_data = zlib.deflateSync(content);
-    fs.writeFileSync(`${directory_path}/${hash.slice(2)}`, compressed_data)
+    fs.mkdirSync(path.join(process.cwd(), ".git", "objects", hash.slice(0, 2)), {
+    recursive: true,
+    });
+    fs.writeFileSync(
+      path.join(process.cwd(), ".git", "objects", hash.slice(0, 2), hash.slice(2)),
+      zlib.deflateSync(content),
+    );
   }  
 }
