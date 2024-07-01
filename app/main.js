@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const zlib = require("zlib");
+const crypto = require("crypto");
 
 
 const command = process.argv[2];
@@ -13,6 +14,10 @@ switch (command) {
   case "cat-file":
     const hash_code = process.argv[4];
     catFile(hash_code);
+    break;
+  case "hash-object":
+    const file_name = process.argv[4];
+    hashObject(file_name);
     break;
   default:
     throw new Error(`Unknown command ${command}`);
@@ -37,4 +42,22 @@ function catFile(hash_code){
   } else {
     throw new Error(`Invalid Flag ${flag}`)
   }
+}
+
+function hashObject (file_name) {
+  if(flag === '-w') {
+    const { size } = fs.statSync(file_name);
+    const data = fs.readFileSync(path.join(process.cwd(), file_name)).toString();
+    const content = `blob ${size}\0${data}`;
+    const hash = crypto.createHash("sha1").update(content).digest("hex");
+    process.stdout.write(hash); 
+    
+    const directory_path = `${process.cwd()}/.git/objects/${hash.slice(0,2)}}`
+    if(!fs.existsSync(directory_path)){
+      fs.mkdirSync(directory_path, {recursive: true,}); 
+    }
+  
+    const compressed_data = zlib.deflateSync(content);
+    fs.writeFileSync(`${directory_path}/${hash.slice(2)}`, compressed_data)
+  }  
 }
